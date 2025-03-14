@@ -10,7 +10,7 @@ import { Timestamp } from "firebase/firestore";
 const App: Application = express();
 
 App.use(cors({
-  origin: "http://localhost:5173", // Allow all domain
+  origin: "https://benevolent-klepon-a2e004.netlify.app/", // Allow all domain
   credentials: true,  // Allow cookies
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
