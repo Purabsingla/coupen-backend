@@ -9,7 +9,10 @@ let serviceAccount: admin.ServiceAccount;
 // ✅ First, try to load from environment variable
 if (process.env.FIREBASE_CONFIG) {
   console.log("🔑 Using FIREBASE_CONFIG from environment variable.");
-  serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG as string);
+  // serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG as string);
+  serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_CONFIG, "base64").toString("utf8")
+);
 } else {
   // ✅ Fallback: Check if `serviceAccount.json` exists
   const serviceAccountPath = path.resolve(__dirname, "../../serviceAccount.json");
