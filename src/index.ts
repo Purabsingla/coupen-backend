@@ -36,12 +36,27 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
     const recentClaims = await claimsRef
       .where("ip", "==", clientIp)
       .where("claimedAt", ">", new Date(Date.now() - 60 * 60 * 1000)) // 1 hour ago
+      .orderBy("claimedAt", "desc") // Get the most recent claim first
+      .limit(1)
       .get();
 
+
     if (!recentClaims.empty || claimedCookie) {
-      return res
-        .status(403)
-        .json({ message: "You can claim another coupon after 1 hour." });
+      const lastClaim = recentClaims.docs[0]?.data(); // Get last claim data
+
+  if (lastClaim) {
+        const lastClaimTime = lastClaim.claimedAt.toDate(); // Convert Firestore Timestamp to Date
+        const cooldownEndTime = new Date(lastClaimTime.getTime() + 60 * 60 * 1000);
+        const timeLeft = Math.ceil((cooldownEndTime - Date.now()) / 60000); // Convert ms to minutes
+
+        return res.status(403).json({
+          message: `You can claim another coupon after ${timeLeft} minutes.`,
+        });
+      }
+
+        return res.status(403).json({
+          message: "You can claim another coupon after 1 hour.",
+        });
     }
 
     const couponsRef = db.collection("coupons");
