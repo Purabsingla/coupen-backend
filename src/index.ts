@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import requestIp from "request-ip";
 import session from "express-session";
 import { db, admin } from "./Database/FireBase";
+import { Timestamp } from "firebase/firestore"; 
 
 const App: Application = express();
 
@@ -45,9 +46,19 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
       const lastClaim = recentClaims.docs[0]?.data(); // Get last claim data
 
   if (lastClaim) {
-        const lastClaimTime: Date = lastClaim.claimedAt.toDate(); // Convert Firestore Timestamp to Date
-        const cooldownEndTime: Date = new Date(lastClaimTime.getTime() + 60 * 60 * 1000);
-        const timeLeft: number = Math.ceil((cooldownEndTime - Date.now()) / 60000); // Convert ms to minutes
+        const lastClaimTime: Timestamp = lastClaim.data().claimedAt; // Firestore Timestamp
+
+  // ✅ Convert Firestore Timestamp to a JavaScript Date
+  const lastClaimDate: Date = lastClaimTime.toDate(); // Converts Firestore Timestamp to Date
+
+  // ✅ Get time in milliseconds
+  const lastClaimMillis: number = lastClaimDate.getTime(); // Get timestamp in milliseconds
+
+  // ✅ Calculate the cooldown end time in milliseconds
+  const cooldownEndTime: number = lastClaimMillis + 60 * 60 * 1000; // Add 1 hour
+
+  // ✅ Get time left in minutes
+  const timeLeft: number = Math.ceil((cooldownEndTime - Date.now()) / 60000);
 
         return res.status(403).json({
           message: `You can claim another coupon after ${timeLeft} minutes.`,
