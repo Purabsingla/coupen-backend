@@ -46,7 +46,7 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
       const lastClaim = recentClaims.docs[0]?.data(); // Get last claim data
 
   if (lastClaim) {
-        const lastClaimTime: Timestamp = lastClaim.data().claimedAt; // Firestore Timestamp
+        const lastClaimTime: Timestamp = lastClaim.claimedAt; // Firestore Timestamp
 
   // ✅ Convert Firestore Timestamp to a JavaScript Date
   const lastClaimDate: Date = lastClaimTime.toDate(); // Converts Firestore Timestamp to Date
