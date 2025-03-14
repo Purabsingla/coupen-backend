@@ -46,7 +46,7 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
 
     const couponsRef = db.collection("coupons");
     const unassignedCoupon = await couponsRef
-      .where("assigned", "==", false)
+      .where("Assigned", "==", false)
       .limit(1)
       .get();
 
@@ -61,9 +61,9 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
 
     // Mark the coupon as assigned
     await couponsRef.doc(couponId).update({
-      assigned: true,
-      assignedTo: clientIp,
-      assignedAt: admin.firestore.FieldValue.serverTimestamp(),
+      Assigned: true,
+      AssignedTo: clientIp,
+      AssignedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Record claim in "claims" collection
@@ -75,7 +75,7 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
     // Set cookie to prevent multiple claims in the same session
     res.cookie("claimed", "yes", { maxAge: 60 * 60 * 1000, httpOnly: true });
 
-    res.json({ success: true, coupon: couponData.code });
+    res.json({ success: true, coupon: couponData.Code });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
