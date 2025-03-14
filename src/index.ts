@@ -9,7 +9,7 @@ import { db, admin } from "./Database/FireBase";
 const App: Application = express();
 
 App.use(cors({
-  origin: "*", // Allow all domain
+  origin: "http://localhost:5173", // Allow all domain
   credentials: true,  // Allow cookies
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
