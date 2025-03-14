@@ -47,7 +47,7 @@ App.post("/claim", async (req: Request, res: Response): Promise<any> => {
   if (lastClaim) {
         const lastClaimTime = lastClaim.claimedAt.toDate(); // Convert Firestore Timestamp to Date
         const cooldownEndTime = new Date(lastClaimTime.getTime() + 60 * 60 * 1000);
-        const timeLeft = Math.ceil((cooldownEndTime - Date.now()) / 60000); // Convert ms to minutes
+        const timeLeft: number = Math.ceil((cooldownEndTime - Date.now()) / 60000); // Convert ms to minutes
 
         return res.status(403).json({
           message: `You can claim another coupon after ${timeLeft} minutes.`,
